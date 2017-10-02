@@ -9,8 +9,8 @@ import java.util.Random;
  */
 public class Matrix {
 
-    public final static double DEFAULT_LOW = -5000;
-    public final static double DEFAULT_HIGH = 5000;
+    public final static double DEFAULT_LOW = -5000.0d;
+    public final static double DEFAULT_HIGH = 5000.0d;
 
     /**
      * Create a NxN matrix with random values
@@ -44,6 +44,37 @@ public class Matrix {
         return randomMatrix(dimension, DEFAULT_LOW, DEFAULT_HIGH);
     }
 
+    /**
+     * Prints a square 2d primitive array to System.out
+     * @param matrix double[][] to print (must be square)
+     */
+    public static void printMatrix(double[][] matrix){
+        int dim = matrix.length;
+        String result = "[";
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                if (j == 0)
+                    result += "\t" + matrix[i][j] + ", ";
+                else if (j != dim -1)
+                    result += matrix[i][j] + ", ";
+                else
+                    result += matrix[i][j];
+            }
+            if (i != dim - 1)
+                result += "\n";
+        }
+        result += "\t]";
+        System.out.println(result);
+    }
 
-
+    public static double[][] getDeepCopy(double[][] matrix){
+        int dim = matrix.length;
+        double[][] newMatrix = new double[dim][dim];
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                newMatrix[i][j] = matrix[i][j];
+            }
+        }
+        return newMatrix;
+    }
 }
