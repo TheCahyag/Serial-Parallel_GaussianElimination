@@ -8,8 +8,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Matrix;
 import model.Result;
-
-import java.util.ArrayList;
+import model.Vector;
 
 /**
  * File: ExecutionGUI.java
@@ -26,7 +25,8 @@ public class ExecutionGUI extends Application {
     private ToggleGroup parallelSerial, matrixDimension;
     private RadioButton parallel, serial,
             sixtyFour, twoFiftySix, tenTwentyFour, fortyNinetySix, sixTeenThreeEightyFour;
-    private Spinner<Integer> repeatRuns, minBounds, maxBounds;
+    private Spinner<Integer> repeatRuns;
+    private Spinner<Double> minBounds, maxBounds;
 
     @Override
     public void init() throws Exception {
@@ -44,7 +44,7 @@ public class ExecutionGUI extends Application {
         setButtonAction();
 
         // Spinners
-        repeatRuns = new Spinner<>(0, 30, 5);
+        repeatRuns = new Spinner<>(0, 30, 1);
         minBounds = new Spinner<>(Integer.MIN_VALUE, Integer.MAX_VALUE - 1, Matrix.DEFAULT_LOW);
         maxBounds = new Spinner<>(Integer.MIN_VALUE + 1, Integer.MAX_VALUE, Matrix.DEFAULT_HIGH);
 
@@ -122,19 +122,27 @@ public class ExecutionGUI extends Application {
             // Parallel execution
             long avgTime = 0;
             for (int i = 0; i < timesToRun; i++) {
-                Result result = GaussianElimination.parallelExecution(dim, minBounds.getValue(), maxBounds.getValue());
+                double min = minBounds.getValue();
+                double max = maxBounds.getValue();
+                double[][] matrix = Matrix.randomMatrix(dim, min, max);
+                double[] vector = Vector.randomVector(dim, min, max);
+                Result result = GaussianElimination.parallelExecution(matrix, vector);
                 avgTime = ((avgTime * i) + result.getTimeInMilli()) / (i + 1);
             }
-            new PostExecutionPopup(timesToRun, avgTime, true, null);
+            new PostExecutionPopup(timesToRun, avgTime, true, null).display();
 
         } else {
             // Serial execution
             long avgTime = 0;
             for (int i = 0; i < timesToRun; i++) {
-                Result result = GaussianElimination.serialExecution(dim, minBounds.getValue(), maxBounds.getValue());
+                double min = minBounds.getValue();
+                double max = maxBounds.getValue();
+                double[][] matrix = Matrix.randomMatrix(dim, min, max);
+                double[] vector = Vector.randomVector(dim, min, max);
+                Result result = GaussianElimination.serialExecution(matrix, vector);
                 avgTime = ((avgTime * i) + result.getTimeInMilli()) / (i + 1);
             }
-            new PostExecutionPopup(timesToRun, avgTime, false, null);
+            new PostExecutionPopup(timesToRun, avgTime, false, null).display();
         }
     }
 }
