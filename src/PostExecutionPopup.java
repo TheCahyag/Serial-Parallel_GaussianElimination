@@ -12,7 +12,7 @@ import java.util.Vector;
  *
  * @author Brandon Bires-Navel (brandonnavel@outlook.com)
  */
-public class PostExecutionPopup extends Application {
+public class PostExecutionPopup {
     private Stage window;
     private BorderPane main;
     private VBox infoStats;
@@ -23,7 +23,7 @@ public class PostExecutionPopup extends Application {
     private Vector result;
 
     /**
-     *
+     * TODO
      * @param timesRan
      * @param avgRunTime
      * @param isParallel
@@ -34,17 +34,22 @@ public class PostExecutionPopup extends Application {
         this.avgRunTime = avgRunTime;
         this.isParallel = isParallel;
         this.result = result;
+        this.init();
     }
 
-    @Override
-    public void init() throws Exception {
+    /**
+     *
+     */
+    public void init() {
         // Init Panes
         main = new BorderPane();
         infoStats = new VBox(10);
     }
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
+    /**
+     *
+     */
+    public void display() {
         window = new Stage();
 
         Text runs = new Text("Times Ran: " + this.timesRan);
