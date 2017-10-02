@@ -1,39 +1,56 @@
 package model;
 
-import java.util.Vector;
-
 /**
  * File: Result.java
  *
  * @author Brandon Bires-Navel (brandonnavel@outlook.com)
  */
 public class Result {
-    private Vector<Double> resultingVector;
+    private double[][] startingMatrix;
+    private double[][] resultingMatrix;
+    private double[] resultingVector;
     private long timeInMilli;
 
-    /**
-     * TODO
-     * @param resultingVector
-     * @param timeInMilli
-     */
-    public Result(Vector<Double> resultingVector, long timeInMilli){
-        this.resultingVector = resultingVector;
-        this.timeInMilli = timeInMilli;
+    public double[][] getStartingMatrix() {
+        return startingMatrix;
     }
 
-    /**
-     * TODO
-     * @return
-     */
-    public Vector<?> getResultingVector() {
+    public void setStartingMatrix(double[][] startingMatrix) {
+        this.startingMatrix = startingMatrix;
+    }
+
+    public double[][] getResultingMatrix() {
+        return resultingMatrix;
+    }
+
+    public void setResultingMatrix(double[][] resultingMatrix) {
+        this.resultingMatrix = resultingMatrix;
+    }
+
+    public double[] getResultingVector() {
         return resultingVector;
     }
 
-    /**
-     * TODO
-     * @return
-     */
+    public void setResultingVector(double[] resultingVector) {
+        this.resultingVector = resultingVector;
+    }
+
     public long getTimeInMilli() {
         return timeInMilli;
+    }
+
+    public void setTimeInMilli(long timeInMilli) {
+        this.timeInMilli = timeInMilli;
+    }
+
+    public void print(){
+        System.out.println("----- START MATRIX -----");
+        Matrix.printMatrix(startingMatrix);
+        System.out.println("----- RESULT MATRIX -----");
+        Matrix.printMatrix(resultingMatrix);
+        System.out.println("----- RESULT VECTOR -----");
+        Vector.printVector(resultingVector);
+        System.out.println("----- EXEC TIME (ms) -----");
+        System.out.println(timeInMilli);
     }
 }
