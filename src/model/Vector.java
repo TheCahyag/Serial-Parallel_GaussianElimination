@@ -43,10 +43,14 @@ public class Vector {
         String result = "[";
         int dim = vector.length;
         for (int i = 0; i < dim; i++) {
+            Double num = vector[i];
+            if (num.isInfinite() || num.isNaN()){
+                num = 0d;
+            }
             if (i != dim -1)
-                result += "\t" + vector[i] + "\n";
+                result += "\t" + num + "\n";
             else
-                result += "\t" + vector[i];
+                result += "\t" + num;
         }
         result += "\t]";
         System.out.println(result);

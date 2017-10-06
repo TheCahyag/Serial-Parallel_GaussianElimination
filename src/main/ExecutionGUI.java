@@ -1,3 +1,5 @@
+package main;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -11,7 +13,7 @@ import model.Result;
 import model.Vector;
 
 /**
- * File: ExecutionGUI.java
+ * File: main.ExecutionGUI.java
  *
  * @author Brandon Bires-Navel (brandonnavel@outlook.com)
  */
@@ -121,28 +123,74 @@ public class ExecutionGUI extends Application {
         if (isParallel){
             // Parallel execution
             long avgTime = 0;
+
+            // Create popup with blank information
+            PostExecutionPopup pep = new PostExecutionPopup(true);
+            pep.blankDisplay();
+
+            // Results
+            Result result = new Result();
+
             for (int i = 0; i < timesToRun; i++) {
+                // Setup
                 double min = minBounds.getValue();
                 double max = maxBounds.getValue();
                 double[][] matrix = Matrix.randomMatrix(dim, min, max);
                 double[] vector = Vector.randomVector(dim, min, max);
-                Result result = GaussianElimination.parallelExecution(matrix, vector);
+
+                // Run execution
+                GaussianElimination.Parallel parallel = new GaussianElimination.Parallel(matrix, vector);
+
+                Thread serialThread = new Thread(parallel);
+                serialThread.start();
+                try {
+                    serialThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                // Get results
+                result = parallel.getResult();
+
                 avgTime = ((avgTime * i) + result.getTimeInMilli()) / (i + 1);
             }
-            new PostExecutionPopup(timesToRun, avgTime, true, null).display();
-
+            double[] resultVector = timesToRun == 1 ? result.getResultingVector() : null;
+            pep.setData(timesToRun, avgTime, resultVector);
         } else {
             // Serial execution
             long avgTime = 0;
+
+            // Create popup with blank information
+            PostExecutionPopup pep = new PostExecutionPopup(false);
+            pep.blankDisplay();
+
+            // Results
+            Result result = new Result();
+
             for (int i = 0; i < timesToRun; i++) {
+                // Setup
                 double min = minBounds.getValue();
                 double max = maxBounds.getValue();
                 double[][] matrix = Matrix.randomMatrix(dim, min, max);
                 double[] vector = Vector.randomVector(dim, min, max);
-                Result result = GaussianElimination.serialExecution(matrix, vector);
+
+                // Run execution
+                GaussianElimination.Serial serial = new GaussianElimination.Serial(matrix, vector);
+                Thread serialThread = new Thread(serial);
+                serialThread.start();
+                try {
+                    serialThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                // Get results
+                result = serial.getResult();
+
                 avgTime = ((avgTime * i) + result.getTimeInMilli()) / (i + 1);
             }
-            new PostExecutionPopup(timesToRun, avgTime, false, null).display();
+            double[] resultVector = timesToRun == 1 ? result.getResultingVector() : null;
+            pep.setData(timesToRun, avgTime, resultVector);
         }
     }
 }

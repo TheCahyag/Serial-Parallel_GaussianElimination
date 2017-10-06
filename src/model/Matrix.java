@@ -1,6 +1,9 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * File: Matrix.java
@@ -11,6 +14,10 @@ public class Matrix {
 
     public final static double DEFAULT_LOW = -5000.0d;
     public final static double DEFAULT_HIGH = 5000.0d;
+
+    public Matrix(){
+
+    }
 
     /**
      * Create a NxN matrix with random values
@@ -53,12 +60,16 @@ public class Matrix {
         String result = "[";
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
+                Double num = matrix[i][j];
+                if (num.isInfinite() || num.isNaN()){
+                    num = 0d;
+                }
                 if (j == 0)
-                    result += "\t" + matrix[i][j] + ", ";
+                    result += "\t" + num + ", ";
                 else if (j != dim -1)
-                    result += matrix[i][j] + ", ";
+                    result += num + ", ";
                 else
-                    result += matrix[i][j];
+                    result += num;
             }
             if (i != dim - 1)
                 result += "\n";
