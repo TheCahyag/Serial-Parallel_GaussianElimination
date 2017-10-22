@@ -1,6 +1,8 @@
 package main;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -26,7 +28,7 @@ public class ExecutionGUI extends Application {
     private Button execute;
     private ToggleGroup parallelSerial, matrixDimension;
     private RadioButton parallel, serial,
-            sixtyFour, twoFiftySix, tenTwentyFour, fortyNinetySix, sixTeenThreeEightyFour;
+            three, sixtyFour, twoFiftySix, tenTwentyFour, fortyNinetySix, sixTeenThreeEightyFour;
     private Spinner<Integer> repeatRuns;
     private Spinner<Double> minBounds, maxBounds;
 
@@ -66,16 +68,19 @@ public class ExecutionGUI extends Application {
         parallel.setSelected(true);
 
         // Radio Buttons for matrixDimension
+        three = new RadioButton("3");
         sixtyFour = new RadioButton("64");
         twoFiftySix = new RadioButton("256");
         tenTwentyFour = new RadioButton("1024");
         fortyNinetySix = new RadioButton("4096");
         sixTeenThreeEightyFour = new RadioButton("16384");
+        three.setToggleGroup(matrixDimension);
         sixtyFour.setToggleGroup(matrixDimension);
         twoFiftySix.setToggleGroup(matrixDimension);
         tenTwentyFour.setToggleGroup(matrixDimension);
         fortyNinetySix.setToggleGroup(matrixDimension);
         sixTeenThreeEightyFour.setToggleGroup(matrixDimension);
+        three.setUserData(3);
         sixtyFour.setUserData(64);
         twoFiftySix.setUserData(256);
         tenTwentyFour.setUserData(1024);
@@ -90,7 +95,7 @@ public class ExecutionGUI extends Application {
 
         // Add Nodes to Panes
         parallelSerialSwitch.getChildren().addAll(parallel, serial);
-        dimensionRadioButtons.getChildren().addAll(sixtyFour, twoFiftySix, tenTwentyFour, fortyNinetySix, sixTeenThreeEightyFour);
+        dimensionRadioButtons.getChildren().addAll(three, sixtyFour, twoFiftySix, tenTwentyFour, fortyNinetySix, sixTeenThreeEightyFour);
         controlPanel.getChildren().addAll(parallelSerialSwitch,
                 new Text("Times to run:"), repeatRuns,
                 new Text("Min value for matrix:"), minBounds,
@@ -99,7 +104,7 @@ public class ExecutionGUI extends Application {
 
         main.setRight(controlPanel);
         main.setLeft(dimensionRadioButtons);
-        Scene scene = new Scene(main, 500, 500);
+        Scene scene = new Scene(main, 300, 300);
         window.setScene(scene);
         window.show();
 
@@ -109,7 +114,12 @@ public class ExecutionGUI extends Application {
      * Sets the actions to preform when a given button is clicked.
      */
     private void setButtonAction(){
-        execute.setOnAction(event -> executeProblem());
+        execute.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                ExecutionGUI.this.executeProblem();
+            }
+        });
     }
 
     /**
@@ -155,7 +165,7 @@ public class ExecutionGUI extends Application {
                 avgTime = ((avgTime * i) + result.getTimeInMilli()) / (i + 1);
             }
             double[] resultVector = timesToRun == 1 ? result.getResultingVector() : null;
-            pep.setData(timesToRun, avgTime, resultVector);
+            pep.setData(timesToRun, avgTime, resultVector, result);
         } else {
             // Serial execution
             long avgTime = 0;
@@ -188,9 +198,15 @@ public class ExecutionGUI extends Application {
                 result = serial.getResult();
 
                 avgTime = ((avgTime * i) + result.getTimeInMilli()) / (i + 1);
+                if (timesToRun == 1){
+                    double[] resultVector = timesToRun == 1 ? result.getResultingVector() : null;
+                    pep.setData(timesToRun, avgTime, resultVector, result);
+                }
             }
-            double[] resultVector = timesToRun == 1 ? result.getResultingVector() : null;
-            pep.setData(timesToRun, avgTime, resultVector);
+            if (timesToRun != 1){
+                double[] resultVector = timesToRun == 1 ? result.getResultingVector() : null;
+                pep.setData(timesToRun, avgTime, resultVector, result);
+            }
         }
     }
 }

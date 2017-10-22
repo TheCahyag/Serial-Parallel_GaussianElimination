@@ -56,4 +56,31 @@ public class Vector {
         System.out.println(result);
 
     }
+
+    public static double[] getDeepCopy(double[] vector){
+        int dim = vector.length;
+        double[] newVector = new double[dim];
+        for (int i = 0; i < dim; i++) {
+            newVector[i] = vector[i];
+
+        }
+        return newVector;
+    }
+
+    public static String toString(double[] vector){
+        String result = "[";
+        int dim = vector.length;
+        for (int i = 0; i < dim; i++) {
+            Double num = vector[i];
+            if (num.isInfinite() || num.isNaN()){
+                num = 0d;
+            }
+            if (i != dim -1)
+                result += "\t" + num + "\n";
+            else
+                result += "\t" + num;
+        }
+        result += "\t]";
+        return result;
+    }
 }

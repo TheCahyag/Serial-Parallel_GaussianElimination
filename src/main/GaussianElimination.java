@@ -2,8 +2,9 @@ package main;
 
 import model.Matrix;
 import model.Result;
-import parallel.ReadyPivot;
-import parallel.SubtractRow;
+import model.Vector;
+import parallel.SetDiagonal;
+import parallel.SubtractRowOperation;
 
 
 /**
@@ -24,6 +25,7 @@ public class GaussianElimination {
             this.vector = vector;
             this.result = new Result();
             this.result.setStartingMatrix(Matrix.getDeepCopy(matrix));
+            this.result.setStartingVector(Vector.getDeepCopy(vector));
         }
 
         @Override
@@ -80,6 +82,7 @@ public class GaussianElimination {
             this.vector = vector;
             this.result = new Result();
             this.result.setStartingMatrix(Matrix.getDeepCopy(matrix));
+            this.result.setStartingVector(Vector.getDeepCopy(vector));
             this.rowLocks = new boolean[this.matrix.length];
         }
 
@@ -91,7 +94,7 @@ public class GaussianElimination {
 
             for (int i = 0; i < len; i++) {
                 // Get the upper triangular matrix
-                ReadyPivot rp = new ReadyPivot(this.matrix, this.vector, i, this);
+                SetDiagonal rp = new SetDiagonal(this.matrix, this.vector, i, this);
                 Thread tmp = new Thread(rp);
                 tmp.run();
                 try {
@@ -101,7 +104,7 @@ public class GaussianElimination {
                 }
                 Thread[] threads = new Thread[len - (i + 1)];
                 for (int j = i + 1, k = 0; j < len; j++, k++) {
-                    SubtractRow sr = new SubtractRow(this.matrix, this.vector, j, this.matrix[j][i], i);
+                    SubtractRowOperation sr = new SubtractRowOperation(this.matrix, this.vector, j, this.matrix[j][i], i);
                     threads[k] = new Thread(sr);
                     sr.run();
                 }
@@ -115,11 +118,12 @@ public class GaussianElimination {
                 }
             }
             for (int i = 1; i < len; i++) {
+                // Put into RREF
                 if (this.matrix[i][i] != 1)
                     continue;
                 Thread[] threads = new Thread[i];
                 for (int j = 0, k = 0; j < i; j++, k++) {
-                    SubtractRow sr = new SubtractRow(this.matrix, this.vector, j, this.matrix[j][i], i);
+                    SubtractRowOperation sr = new SubtractRowOperation(this.matrix, this.vector, j, this.matrix[j][i], i);
                     threads[k] = new Thread(sr);
                     sr.run();
                 }
@@ -138,27 +142,12 @@ public class GaussianElimination {
             this.result.setResultingVector(this.vector);
         }
 
-        public synchronized boolean canModRows(int row1, int row2){
-            if (!this.rowLocks[row1] && !this.rowLocks[row2]){
-                this.rowLocks[row1] = true;
-                this.rowLocks[row2] = true;
-                return true;
-            }
-            return false;
-        }
-
         public synchronized boolean canModRow(int row){
             if (!this.rowLocks[row]){
                 this.rowLocks[row] = true;
                 return true;
             }
             return false;
-        }
-
-        public synchronized void doneWithRows(int row1, int row2){
-            this.rowLocks[row1] = false;
-            this.rowLocks[row2] = false;
-            notifyAll();
         }
 
         public synchronized void doneWithRow(int row){
@@ -169,7 +158,5 @@ public class GaussianElimination {
         public Result getResult() {
             return this.result;
         }
-
-
     }
 }

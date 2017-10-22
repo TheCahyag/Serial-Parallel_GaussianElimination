@@ -88,4 +88,27 @@ public class Matrix {
         }
         return newMatrix;
     }
+
+    public static String toString(double[][] matrix){
+        int dim = matrix.length;
+        String result = "[";
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                Double num = matrix[i][j];
+                if (num.isInfinite() || num.isNaN()){
+                    num = 0d;
+                }
+                if (j == 0)
+                    result += "\t" + num + ", ";
+                else if (j != dim -1)
+                    result += num + ", ";
+                else
+                    result += num;
+            }
+            if (i != dim - 1)
+                result += "\n";
+        }
+        result += "\t]";
+        return result;
+    }
 }

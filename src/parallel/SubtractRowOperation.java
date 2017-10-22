@@ -1,17 +1,17 @@
 package parallel;
 
 /**
- * File: SubtractRow.java
+ * File: SubtractRowOperation.java
  *
  * @author Brandon Bires-Navel (brandonnavel@outlook.com)
  */
-public class SubtractRow implements Runnable {
+public class SubtractRowOperation implements Runnable {
     private double[][] matrix;
     private double[] vector;
     private int row, refRow;
     private double multiplier;
 
-    public SubtractRow(double[][] matrix, double[] vector, int row, double multiplier, int refRow) {
+    public SubtractRowOperation(double[][] matrix, double[] vector, int row, double multiplier, int refRow) {
         this.matrix = matrix;
         this.vector = vector;
         this.row = row;

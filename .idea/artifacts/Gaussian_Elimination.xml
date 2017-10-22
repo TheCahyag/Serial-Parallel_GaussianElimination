@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="Gaussian Elimination">
+    <output-path>$PROJECT_DIR$/out/artifacts/Gaussian_Elimination</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="main.ExecutionGUI" />
+        <option name="description" value="" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="title" value="" />
+        <option name="vendor" value="" />
+        <option name="version" value="" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="Serial_Gaussian_Elimination.jar">
+        <element id="module-output" name="Serial Gaussian Elimination" />
+      </element>
+    </root>
+  </artifact>
+</component>

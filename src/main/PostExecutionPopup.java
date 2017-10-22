@@ -5,6 +5,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import model.Matrix;
+import model.Result;
+import model.Vector;
 
 
 /**
@@ -22,6 +25,8 @@ public class PostExecutionPopup {
     private long avgRunTime;
     private boolean isParallel;
     private double[] result;
+    private Boolean hasData = false;
+    private Result data;
 
     /**
      *
@@ -41,7 +46,7 @@ public class PostExecutionPopup {
         infoStats = new VBox(10);
 
         window = new Stage();
-        scene = new Scene(main, 300, 500);
+        scene = new Scene(main, 300, 300);
     }
 
     /**
@@ -51,6 +56,19 @@ public class PostExecutionPopup {
         Text runs = new Text("Times Ran: " + this.timesRan);
         Text avgTime = new Text("Avg Time per Run: " + this.avgRunTime);
         Text execution = isParallel ? new Text("Execution: parallel") : new Text("Execution: serial");
+        if (this.result.length == 3){
+            Text matrixStartTitle = new Text("Starting Matrix: ");
+            Text matrixStart = new Text(Matrix.toString(this.data.getStartingMatrix()));
+            Text vectorStartTitle = new Text("Starting Vector: ");
+            Text vectorStart = new Text(Vector.toString(this.data.getStartingVector()));
+            Text matrixEndTitle = new Text("Resulting Matrix: ");
+            Text matrixEnd = new Text(Matrix.toString(this.data.getResultingMatrix()));
+            Text vectorTitle = new Text("Resulting Vector: ");
+            Text vector = new Text(Vector.toString(this.result));
+            infoStats.getChildren().addAll(runs, avgTime, execution,
+                    matrixStartTitle, matrixStart, vectorStartTitle,
+                    vectorStart, matrixEndTitle, matrixEnd, vectorTitle, vector);
+        }
         infoStats.getChildren().addAll(runs, avgTime, execution);
         main.setCenter(infoStats);
         scene.setRoot(main);
@@ -77,11 +95,10 @@ public class PostExecutionPopup {
      * @param avgRunTime
      * @param vector
      */
-    public void setData(int timesRan, long avgRunTime, double[] vector){
+    public void setData(int timesRan, long avgRunTime, double[] vector, Result data){
         this.timesRan = timesRan;
         this.avgRunTime = avgRunTime;
         this.result = vector;
-        System.out.println("new data: " + avgRunTime);
         display();
     }
 }
